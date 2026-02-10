@@ -24,9 +24,12 @@ public class ITextSigningCore {
         this.tsaUrl = tsaUrl;
     }
 
-    public void executeSignature(String src, String dest, Certificate[] chain, PrivateKey pk, String provider, String reason, String location, BufferedImage appearanceImg) throws Exception {
+    public void executeSignature(String src, String dest, Certificate[] chain, PrivateKey pk, String provider, String reason, String location, BufferedImage appearanceImg, int certLevel) throws Exception {
         try (PdfReader reader = new PdfReader(src); FileOutputStream os = new FileOutputStream(dest)) {
             PdfSigner signer = new PdfSigner(reader, os, new StampingProperties().useAppendMode());
+            if (certLevel > 0) {
+                signer.setCertificationLevel(certLevel);
+            }
             String fieldName = "SIG_" + System.currentTimeMillis();
             signer.setFieldName(fieldName);
 
